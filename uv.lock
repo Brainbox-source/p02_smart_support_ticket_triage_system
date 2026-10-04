@@ -629,6 +629,7 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "asyncpg" },
+    { name = "email-validator" },
     { name = "fastapi", extra = ["standard"] },
     { name = "pydantic-settings" },
 ]
@@ -636,6 +637,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "asyncpg", specifier = ">=0.31.0" },
+    { name = "email-validator", specifier = ">=2.3.0" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.142.2" },
     { name = "pydantic-settings", specifier = ">=2.15.0" },
 ]
