@@ -4,7 +4,12 @@ from uuid import UUID
 import asyncpg
 from fastapi import APIRouter, HTTPException, Request, status
 
-from ..db.tickets import fetch_ticket, insert_ticket, modify_ticket_status
+from ..db.tickets import (
+    fetch_all_tickets,
+    fetch_ticket,
+    insert_ticket,
+    modify_ticket_status,
+)
 from ..errors.llm import InvalidLLMResponseError, LLMUnavailableError
 from ..schemas.ticket import LLMResponse, Ticket, TicketClosure, TicketEntry
 from ..services.llm import structure_ticket
@@ -50,6 +55,22 @@ async def create_ticket(ticket_data: TicketEntry, request: Request):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="we could not store your ticket. please try again.",
         )
+
+
+@router.get("/", response_model=list[Ticket])
+async def get_all_tickets(request: Request):
+    """retrieve all tickets"""
+
+    pool = get_db_pool(request)
+
+    try:
+        records = await fetch_all_tickets(pool)
+
+        return [dict(record) for record in records]
+    except POSTGRES_ERROR:
+        logger.exception("tickets retrieval failed")
+
+        raise HTTPException(status_code=500, detail="failed to fetch all tickets")
 
 
 @router.get("/{ticket_id}", response_model=Ticket)

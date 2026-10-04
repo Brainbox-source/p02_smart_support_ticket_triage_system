@@ -55,15 +55,25 @@ async def insert_ticket(
         return record
 
 
-# SELECT * FROM tickets
-# WHERE status = 'open'
-# ORDER BY
-#     CASE priority
-#         WHEN 'critical' THEN 1
-#         WHEN 'high' THEN 2
-#         WHEN 'medium' THEN 3
-#         WHEN 'low' THEN 4
-#     END;
+async def fetch_all_tickets(pool: POOL) -> list[RECORD]:
+    """fetch all tickets, ordered by urgency"""
+
+    query = """
+        SELECT * FROM tickets
+        WHERE status = 'open'
+        ORDER BY
+            CASE urgency
+                WHEN 'critical' THEN 1
+                WHEN 'high' THEN 2
+                WHEN 'medium' THEN 3
+                WHEN 'low' THEN 4
+            END;
+    """
+
+    async with pool.acquire() as connection:
+        records = await connection.fetch(query)
+
+        return records
 
 
 async def fetch_ticket(pool: POOL, ticket_id: UUID) -> RECORD | None:
