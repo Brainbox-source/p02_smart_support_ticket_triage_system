@@ -55,6 +55,31 @@ async def insert_ticket(
         return record
 
 
+# SELECT * FROM tickets
+# WHERE status = 'open'
+# ORDER BY
+#     CASE priority
+#         WHEN 'critical' THEN 1
+#         WHEN 'high' THEN 2
+#         WHEN 'medium' THEN 3
+#         WHEN 'low' THEN 4
+#     END;
+
+
+async def fetch_ticket(pool: POOL, ticket_id: UUID) -> RECORD | None:
+    """fetches a single ticket by its id. returns None if not found"""
+
+    query = """
+        SELECT * FROM tickets
+        WHERE id = $1;
+    """
+
+    async with pool.acquire() as connection:
+        record = await connection.fetchrow(query, ticket_id)
+
+        return record
+
+
 async def modify_ticket_status(
     pool: POOL, ticket_id: UUID, new_data: TicketClosure
 ) -> RECORD | None:
