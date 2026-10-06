@@ -26,10 +26,10 @@ class TicketEntry(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True, extra="forbid")
 
     email: EmailStr = Field(max_length=254)
-    description: str = Field(min_length=10)
+    description: str = Field(min_length=10, max_length=5000)
 
 
-class LLMResponse(BaseModel):
+class TicketAnalysis(BaseModel):
     """what the llm returns; exactly this shape"""
 
     subject: str = Field(min_length=1, max_length=255)

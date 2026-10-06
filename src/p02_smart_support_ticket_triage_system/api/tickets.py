@@ -11,7 +11,7 @@ from ..db.tickets import (
     modify_ticket_status,
 )
 from ..errors.llm import InvalidLLMResponseError, LLMUnavailableError
-from ..schemas.ticket import LLMResponse, Ticket, TicketClosure, TicketEntry
+from ..schemas.ticket import Ticket, TicketAnalysis, TicketClosure, TicketEntry
 from ..services.llm import structure_ticket
 from .dependencies import get_db_pool
 
@@ -28,7 +28,7 @@ async def create_ticket(ticket_data: TicketEntry, request: Request):
     pool = get_db_pool(request)
 
     try:
-        llm_response: LLMResponse = await structure_ticket(ticket_data.description)
+        llm_response: TicketAnalysis = await structure_ticket(ticket_data.description)
     except LLMUnavailableError as error:
         logger.exception("llm unavailable")
 

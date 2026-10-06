@@ -2,14 +2,14 @@ from uuid import UUID
 
 import asyncpg
 
-from ..schemas.ticket import LLMResponse, TicketClosure, TicketEntry
+from ..schemas.ticket import TicketAnalysis, TicketClosure, TicketEntry
 
 POOL = asyncpg.Pool
 RECORD = asyncpg.Record
 
 
 async def insert_ticket(
-    pool: POOL, ticket_data: TicketEntry, llm_response: LLMResponse
+    pool: POOL, ticket_data: TicketEntry, llm_response: TicketAnalysis
 ) -> RECORD:
     """inserts a new ticket and returns the record"""
 
